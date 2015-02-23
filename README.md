@@ -1,9 +1,9 @@
 # RosGui
 A GUI tool to assist my research project with ROS, developed with GTK+ and Boost.
 
-Functions:
+Functions and features:
 - Shortcuts to start roscore, rviz, rosclean and catkin_make.
-- Shortcut to start roslaunch.
+- Shortcut to start roslaunch with auto completion.
 - Print ros-related files: ros logs, launch files, etc.
 - Launch file generator for my research projects.
 
