@@ -17,9 +17,10 @@ make
 ```
 
 Development Logs:
-http://www.ysonggit.io
+http://ysonggit.github.io
 
 TODO List:
+- File Remover, shortcut to remove specified files, such as launch file
 - Experimental Script Generator
 - Experimental Data Visualization
 
