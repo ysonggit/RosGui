@@ -1,18 +1,21 @@
 # RosGui
 A GUI tool to assist my research project with ROS, developed with GTK+ and Boost.
 
+![Imgur](http://i.imgur.com/tMWKM2D.png)
+
 Compile:
 
-```cmake CMakeLists.txt```
+```bash
+cmake CMakeLists.txt
+```
 
-```make```
-
-Execute:
-
-```./bin/rosgui```
+```bash
+make
+```
 
 
-[Development Logs](http://www.ysonggit.io)
+Development Logs:
+http://www.ysonggit.io
 
 TODO List:
 Experimental Script Generator
