@@ -49,7 +49,7 @@ PopWindow::PopWindow(int n, std::map<int, Pose> *& ptrPoses )
   
     for(int i=0; i<robotsnum; i++){
         stringstream ss;
-        ss<<i;
+        ss<<i+1;
         ptrPoseFrames[i] = make_shared<PoseFrame>(ss.str());
         m_VBox_Sub.pack_start(ptrPoseFrames[i]->m_Frame_Pose);
     }

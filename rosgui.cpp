@@ -62,6 +62,7 @@ RosGui::RosGui()
     lattice_files = read_dir(lat_path);
     robotsnum = 2;
     countdown = 1;
+    timeout = 3;
     savepose = false;
     setpose = false;
     minx = -100;
@@ -187,19 +188,6 @@ void RosGui::set_box_roslaunch_rosrun(){
     m_refEntryCompletion->set_minimum_key_length(1);
     m_refEntryCompletion->set_popup_completion(true);
     populateCompletion();
-    // add box containing rosrun button, rospack entry and rosnode entry
-    // m_Table.attach(m_RBox,0,2,2,3);
-    // m_RBox.pack_start(run_Box, Gtk::PACK_SHRINK);
-    // run_Box.pack_start(rosrun_btn, Gtk::PACK_SHRINK);
-    // run_Box.pack_start(rospack_entry, Gtk::PACK_SHRINK);
-    // run_Box.pack_start(rosnode_entry, Gtk::PACK_SHRINK);
-    // rosrun_btn.signal_clicked().connect(sigc::mem_fun(*this,
-    //         &RosGui::on_rosrun_btn_clicked));
-    // //rospack_entry.set_max_length(100);
-    // rospack_entry.set_text("rospackage name");
-    // //rosnode_entry.set_max_length(100);
-    // rosnode_entry.set_text("rosnode name");
- 
 }
 
 void RosGui::set_textview_buffer(){ 
@@ -453,18 +441,22 @@ void RosGui::on_button_generate(){
     }
     stringstream ss;
     ss<<robotsnum;
-    string fname = string("test_")+lat_type+string("_")+ss.str()+string("bots.launch");
+    string fname = lat_type+string("_")+ss.str()+string("bots.launch");
     LaunchFile lf(fname);
     // create parameters
     std::vector<LaunchParam> lparams;
     LaunchParam lp_countdown = LaunchParam("count_down", "double", double_to_string(countdown));
     lparams.push_back(lp_countdown);
+    LaunchParam lp_timeout = LaunchParam("time_out", "double", double_to_string(timeout));
+    lparams.push_back(lp_timeout);
     LaunchParam lp_sensing = LaunchParam("sensing_range", "double", "50");
     lparams.push_back(lp_sensing);
     LaunchParam lp_max_vel = LaunchParam("max_linear_vel", "double", "1");
     lparams.push_back(lp_max_vel);
     LaunchParam lp_save_pose = LaunchParam("save_pose", "bool", bool_to_string(savepose));
     lparams.push_back(lp_save_pose);
+    LaunchParam lp_set_pose = LaunchParam("set_pose", "bool", bool_to_string(setpose)); 
+    lparams.push_back(lp_set_pose);
     string lg_val = string("$(find controller)lattice/") + string(lattice_name);
     LaunchParam lp_lg = LaunchParam("latticegraph", "str", lg_val);
     lparams.push_back(lp_lg);
@@ -479,37 +471,40 @@ void RosGui::on_button_generate(){
     ln_simu.params.push_back(LaunchParam("env_y1", "double", double_to_string(miny)));
     ln_simu.params.push_back(LaunchParam("env_x2", "double", double_to_string(maxx)));
     ln_simu.params.push_back(LaunchParam("env_y2", "double", double_to_string(maxy)));
-    ln_simu.params.push_back(LaunchParam("set_pose", "bool", bool_to_string(setpose)));
-    on_combo_robotsposes_changed();
-    if(pose_id==2){
-        // manually enter pose
-        for(int i=0; i<robotsnum;i++){
-            stringstream ss_i;
-            ss_i << i+1;
-            string x = string("X")+ss_i.str();
-            string y = string("Y")+ss_i.str();
-            string theta = string("Theta")+ss_i.str();
-            ln_simu.params.push_back(LaunchParam(x, "double", all_poses[i].x));
-            ln_simu.params.push_back(LaunchParam(y, "double", all_poses[i].y));
-            ln_simu.params.push_back(LaunchParam(theta, "double", all_poses[i].theta));
-        }
-    }
-    if(pose_id == 3){
-        // load poses
-    }
     lnodes.push_back(ln_simu);
+    on_combo_robotsposes_changed();
     // create nodes of controllers
     for(int i=0; i<robotsnum; i++){
         LaunchNode ln;
         ln.ntype="controller";
         ln.pkg="controller";
         stringstream ss;
-        ss<<i;
+        ss<<i+1;
         ln.name=string("robot")+ss.str();
         ln.params.push_back(LaunchParam("robotid", "int", ss.str()));
-        lnodes.push_back(ln);
+        if(pose_id==2){
+        // manually enter pose
+            string rpose;
+            ss.str(string());
+            ss.clear();
+            ss<<all_poses[i].x;
+            rpose += ss.str() + string("#");
+            ss.str(string());
+            ss.clear();
+            ss<<all_poses[i].y;
+            rpose += ss.str() + string("#");
+            ss.str(string());
+            ss.clear();
+            ss<<all_poses[i].theta;
+            rpose += ss.str();
+            LaunchParam lp_robot_pose = LaunchParam("robotpose", "string", rpose);
+            ln.params.push_back(lp_robot_pose);
+            lnodes.push_back(ln);
+        }
+        if(pose_id == 3){
+            // load poses
+        }
     }
-    
     lf.create(lnodes, lparams);
     //const char * lau_path = "src/controller/launch/";
     lf.write(lau_path);

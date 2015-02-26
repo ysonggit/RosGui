@@ -96,6 +96,7 @@ protected:
     // frame
     int robotsnum;
     int countdown;
+    int timeout;
     int pose_id; // id of selecting methods to initialize poses
     Glib::ustring lattice_name;
     bool savepose, setpose;
