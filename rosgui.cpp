@@ -23,16 +23,20 @@ RosGui::RosGui()
       m_VBox_Main(Gtk::ORIENTATION_VERTICAL, 5),
       m_VBox_Generator(Gtk::ORIENTATION_VERTICAL),
       m_VBox_Countdown(Gtk::ORIENTATION_VERTICAL),
+    m_VBox_Timeout(Gtk::ORIENTATION_VERTICAL),
     m_VBox_Robotsnum(Gtk::ORIENTATION_VERTICAL),
     m_VBox_Robotsposes(Gtk::ORIENTATION_VERTICAL),
     m_VBox_Lattice(Gtk::ORIENTATION_VERTICAL),
     m_Label_Countdown("Countdown Seconds: "),
+    m_Label_Timeout("Timeout Seconds: "),
     m_Label_Robotsnum("Robots Number: "),
     m_Label_Lattice("Lattice Graph: "),
     m_Label_Robotsposes("Initial Poses: "),
     m_adjustment_countdown( Gtk::Adjustment::create(1.0, 0.0, 60.0, 1.0, 1.0, 0.0) ),
+    m_adjustment_timeout( Gtk::Adjustment::create(1.0, 0.0, 60.0, 1.0, 1.0, 0.0) ),
     m_adjustment_robotsnum( Gtk::Adjustment::create(2.0, 1.0, 200.0, 1.0, 1.0, 0.0) ),
     m_SpinButton_Countdown(m_adjustment_countdown),
+    m_SpinButton_Timeout(m_adjustment_timeout),
     m_SpinButton_Robotsnum(m_adjustment_robotsnum),
     m_Frame_Environment("Environment Dimension"),
     m_VBox_Environment(Gtk::ORIENTATION_VERTICAL),
@@ -396,12 +400,16 @@ void RosGui::on_checkbutton_setpose(){
     setpose = m_CheckButton_Setpose.get_active();
 }
 
-void RosGui::on_spinbutton_robotsnum_changed(){
-    robotsnum = m_SpinButton_Robotsnum.get_value_as_int();
-}
-
 void RosGui::on_spinbutton_countdown_changed(){
     countdown = m_SpinButton_Countdown.get_value_as_int();
+}
+
+void RosGui::on_spinbutton_timeout_changed(){
+    timeout = m_SpinButton_Timeout.get_value_as_int();
+}
+
+void RosGui::on_spinbutton_robotsnum_changed(){
+    robotsnum = m_SpinButton_Robotsnum.get_value_as_int();
 }
 
 void RosGui::on_spinbutton_minx_changed(){
@@ -483,7 +491,7 @@ void RosGui::on_button_generate(){
         ln.name=string("robot")+ss.str();
         ln.params.push_back(LaunchParam("robotid", "int", ss.str()));
         if(pose_id==2){
-        // manually enter pose
+            // manually enter pose
             string rpose;
             ss.str(string());
             ss.clear();
@@ -608,7 +616,15 @@ void RosGui::set_frame_generator(){
     m_VBox_Countdown.pack_start(m_SpinButton_Countdown);
     m_adjustment_countdown->signal_value_changed().connect( sigc::mem_fun(*this,
             &RosGui::on_spinbutton_countdown_changed) );
-    
+    // add spinbutton timeout
+    m_HBox_Generator.pack_start(m_VBox_Timeout, Gtk::PACK_EXPAND_WIDGET, 5);
+    m_Label_Timeout.set_alignment(Gtk::ALIGN_START);
+    m_VBox_Timeout.pack_start(m_Label_Timeout);
+
+    m_VBox_Timeout.pack_start(m_SpinButton_Timeout);
+    m_adjustment_timeout->signal_value_changed().connect( sigc::mem_fun(*this,
+            &RosGui::on_spinbutton_timeout_changed) );
+    // add spinbutton robotsnum
     m_HBox_Generator.pack_start(m_VBox_Robotsnum, Gtk::PACK_EXPAND_WIDGET, 5);
     m_Label_Robotsnum.set_alignment(Gtk::ALIGN_START);
     m_VBox_Robotsnum.pack_start(m_Label_Robotsnum);

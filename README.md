@@ -7,7 +7,7 @@ Functions and features:
 - Print ros-related files: ros logs, launch files, etc.
 - Launch file generator for my research projects.
 
-![Imgur](http://i.imgur.com/tMWKM2D.png)
+![Imgur](http://i.imgur.com/kA5uhhs.png)
 
 Compile:
 
@@ -20,7 +20,6 @@ Development Logs:
 http://ysonggit.github.io
 
 TODO List:
-- File Remover, shortcut to remove specified files, such as launch file
 - Experimental Script Generator
 - Experimental Data Visualization
 

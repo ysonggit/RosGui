@@ -105,6 +105,7 @@ protected:
     double minx, miny, maxx, maxy;
     void on_checkbutton_savepose();
     void on_checkbutton_setpose();
+    void on_spinbutton_timeout_changed();
     void on_spinbutton_robotsnum_changed();
     void on_spinbutton_countdown_changed();
     void on_button_generate();
@@ -117,15 +118,17 @@ protected:
     Gtk::Box m_HBox_Generator,  m_HBox_Generator1,
         m_HBox_Generator2, m_HBox_Buttons;
     Gtk::Box m_VBox_Main, m_VBox_Generator, m_VBox_Environment, m_VBox_Countdown,
-        m_VBox_Robotsnum, m_VBox_Lattice, m_VBox_Robotsposes,
+        m_VBox_Timeout, m_VBox_Robotsnum, m_VBox_Lattice, m_VBox_Robotsposes,
         m_VBox_MinX, m_VBox_MinY, m_VBox_MaxX, m_VBox_MaxY;
-    Gtk::Label m_Label_Countdown, m_Label_Robotsnum,
+    Gtk::Label m_Label_Countdown, m_Label_Robotsnum, m_Label_Timeout,
         m_Label_ShowCountdown, m_Label_Lattice, m_Label_Robotsposes,
         m_Label_MinX, m_Label_MinY, m_Label_MaxX, m_Label_MaxY;
-    Glib::RefPtr<Gtk::Adjustment> m_adjustment_countdown, m_adjustment_robotsnum,
+    Glib::RefPtr<Gtk::Adjustment> m_adjustment_countdown,
+        m_adjustment_robotsnum, m_adjustment_timeout,
         m_adjustment_minx, m_adjustment_miny,
         m_adjustment_maxx, m_adjustment_maxy;
     Gtk::SpinButton m_SpinButton_Countdown, m_SpinButton_Robotsnum,
+        m_SpinButton_Timeout,
         m_SpinButton_MinX, m_SpinButton_MinY,
         m_SpinButton_MaxX, m_SpinButton_MaxY;
     Gtk::CheckButton m_CheckButton_Savepose, m_CheckButton_Setpose;
