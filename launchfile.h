@@ -27,7 +27,7 @@ struct LaunchNode{
     string name;
     string output;
     string required;
-    string launch_refix;
+    string launch_prefix;
     vector<LaunchParam> params;
 };
 

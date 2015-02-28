@@ -480,6 +480,12 @@ void RosGui::on_button_generate(){
     ln_simu.params.push_back(LaunchParam("env_x2", "double", double_to_string(maxx)));
     ln_simu.params.push_back(LaunchParam("env_y2", "double", double_to_string(maxy)));
     lnodes.push_back(ln_simu);
+    LaunchNode ln_shell;
+    ln_shell.ntype="shell";
+    ln_shell.pkg = "shell";
+    ln_shell.name="viewrobots";
+    ln_shell.output="screen";
+    lnodes.push_back(ln_shell);
     on_combo_robotsposes_changed();
     // create nodes of controllers
     for(int i=0; i<robotsnum; i++){
