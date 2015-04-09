@@ -99,12 +99,10 @@ protected:
     int timeout;
     int pose_id; // id of selecting methods to initialize poses
     Glib::ustring lattice_name;
-    bool savepose, setpose;
+
     std::string bool_to_string(bool );
     std::string double_to_string(double );
     double minx, miny, maxx, maxy;
-    void on_checkbutton_savepose();
-    void on_checkbutton_setpose();
     void on_spinbutton_timeout_changed();
     void on_spinbutton_robotsnum_changed();
     void on_spinbutton_countdown_changed();
@@ -131,7 +129,6 @@ protected:
         m_SpinButton_Timeout,
         m_SpinButton_MinX, m_SpinButton_MinY,
         m_SpinButton_MaxX, m_SpinButton_MaxY;
-    Gtk::CheckButton m_CheckButton_Savepose, m_CheckButton_Setpose;
     Gtk::Button m_Button_Enter, m_Button_Generate;
 
     void set_combo_robotsposes();
