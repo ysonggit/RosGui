@@ -13,9 +13,7 @@ void LaunchFile::updateNode(ptree & node,  LaunchNode ln){
      node.add("<xmlattr>.type", ln.ntype);
      node.add("<xmlattr>.pkg", ln.pkg);
      node.add("<xmlattr>.name", ln.name);
-     if(!ln.output.empty()){
-         node.add("<xmlattr>.output", ln.output);
-     }
+     node.add("<xmlattr>.output", ln.output);
      //node.add("<xmlattr>.required", ln.required);
      //node.add("<xmlattr>.launch_prefix", ln.launch_prefix);
      for(LaunchParam lp : ln.params){

@@ -56,6 +56,8 @@ RosGui::RosGui()
     m_adjustment_maxy(Gtk::Adjustment::create(100.0, -1000.0, 1000.0, 10.0, 1.0, 0.0) ),
     m_SpinButton_MaxX(m_adjustment_maxx),
     m_SpinButton_MaxY(m_adjustment_maxy),
+    m_CheckButton_Savepose("Save Robots Poses"),
+    m_CheckButton_Setpose("Manually Set Initial Poses"),
     m_Button_Enter("Enter Poses"),
     m_Button_Generate("Generate Launch File"),
     m_VBox_Panel(Gtk::ORIENTATION_VERTICAL)
@@ -65,6 +67,8 @@ RosGui::RosGui()
     robotsnum = 2;
     countdown = 1;
     timeout = 3;
+    savepose = false;
+    setpose = false;
     minx = -100;
     miny = -100;
     maxx = 100;
@@ -388,6 +392,14 @@ void RosGui::on_button_file_clicked(){
     }
 }
 
+void RosGui::on_checkbutton_savepose(){
+    savepose = m_CheckButton_Savepose.get_active();
+}
+
+void RosGui::on_checkbutton_setpose(){
+    setpose = m_CheckButton_Setpose.get_active();
+}
+
 void RosGui::on_spinbutton_countdown_changed(){
     countdown = m_SpinButton_Countdown.get_value_as_int();
 }
@@ -428,6 +440,7 @@ string RosGui::double_to_string(double n){
 
 void RosGui::on_button_generate(){
     string lat_type;
+    on_combo_robotsposes_changed();
     on_combo_lattice_changed();
     int dot_pos = lattice_name.length()-1;
     for(int i=0; i<lattice_name.length(); i++){
@@ -448,8 +461,8 @@ void RosGui::on_button_generate(){
     lparams.push_back(lp_sensing);
     LaunchParam lp_max_vel = LaunchParam("max_linear_vel", "double", "1");
     lparams.push_back(lp_max_vel);
-    on_combo_robotsposes_changed();
-    bool setpose = (pose_id==2) ?  true : false;
+    LaunchParam lp_save_pose = LaunchParam("save_pose", "bool", bool_to_string(savepose));
+    lparams.push_back(lp_save_pose);
     LaunchParam lp_set_pose = LaunchParam("set_pose", "bool", bool_to_string(setpose)); 
     lparams.push_back(lp_set_pose);
     string lg_val = string("$(find controller)lattice/") + string(lattice_name);
@@ -473,7 +486,7 @@ void RosGui::on_button_generate(){
     ln_shell.name="viewrobots";
     ln_shell.output="screen";
     lnodes.push_back(ln_shell);
-    on_spinbutton_robotsnum_changed();
+    on_combo_robotsposes_changed();
     // create nodes of controllers
     for(int i=0; i<robotsnum; i++){
         LaunchNode ln;
@@ -500,11 +513,11 @@ void RosGui::on_button_generate(){
             rpose += ss.str();
             LaunchParam lp_robot_pose = LaunchParam("robotpose", "string", rpose);
             ln.params.push_back(lp_robot_pose);
+            lnodes.push_back(ln);
         }
         if(pose_id == 3){
             // load poses
         }
-        lnodes.push_back(ln);
     }
     lf.create(lnodes, lparams);
     //const char * lau_path = "src/controller/launch/";
@@ -681,7 +694,18 @@ void RosGui::set_frame_generator(){
     m_Combo_Lattice.signal_changed().connect( sigc::mem_fun(*this,
             &RosGui::on_combo_lattice_changed) );
     m_VBox_Lattice.pack_start(m_Combo_Lattice);
-   
+    /*----------------------- two check buttons ------------------------*/
+    //CheckButtons:
+    m_VBox_Generator.pack_start(m_CheckButton_Savepose);
+    m_CheckButton_Savepose.set_active(false);
+    m_CheckButton_Savepose.signal_clicked().connect( sigc::mem_fun(*this,
+            &RosGui::on_checkbutton_savepose) );
+
+    m_VBox_Generator.pack_start(m_CheckButton_Setpose);
+    m_CheckButton_Setpose.set_active(false);
+    m_CheckButton_Setpose.signal_clicked().connect( sigc::mem_fun(*this,
+            &RosGui::on_checkbutton_setpose) );
+
     //Buttons:
     m_VBox_Generator.pack_start (m_HBox_Buttons, Gtk::PACK_SHRINK, 5);
     m_Button_Enter.signal_clicked().connect( sigc::mem_fun(*this,
